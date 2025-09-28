@@ -1,0 +1,4 @@
+# Default variables for nginx role
+nginx_port: 8080
+nginx_html_path: /var/www/html/index.html
+nginx_config_path: /etc/nginx/sites-available/default

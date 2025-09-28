@@ -1,0 +1,51 @@
+- name: Update apt package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+  notify: restart nginx
+
+- name: Install curl for testing
+  ansible.builtin.apt:
+    name: curl
+    state: present
+
+- name: Ensure nginx is enabled and started
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Deploy dynamic HTML page
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+  notify: restart nginx
+
+# - name: Backup original nginx config
+#   ansible.builtin.copy:
+#     src: /etc/nginx/sites-available/default
+#     dest: /etc/nginx/sites-available/default.backup
+#     remote_src: true
+#     mode: '0644'
+#     owner: root
+#     group: root
+#     when: ansible_os_family == "Debian"
+
+- name: Deploy nginx configuration for port 8080
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+    mode: '0644'
+  notify: restart nginx
+
+- name: Test nginx configuration
+  ansible.builtin.command: nginx -t
+  register: nginx_test
+  changed_when: false
+  notify: restart nginx

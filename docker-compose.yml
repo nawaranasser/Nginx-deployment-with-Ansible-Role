@@ -1,0 +1,15 @@
+version: 1.0.0
+services:
+  web-server-1:
+    image: ubuntu:20.04
+    container_name: web-1
+    command: /bin/bash -c "apt-get update && apt-get install -y python3 sudo && tail -f /dev/null"
+    privileged: true
+
+  web-server-2:
+    image: ubuntu:20.04
+    container_name: web-2
+    command: /bin/bash -c "apt-get update && apt-get install -y python3 sudo && tail -f /dev/null"
+    privileged: true
+
+#Keeps container running (tail -f /dev/null)
